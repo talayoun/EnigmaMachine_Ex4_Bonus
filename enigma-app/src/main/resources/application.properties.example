@@ -3,11 +3,14 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/enigma?stringtype=unspeci
 spring.datasource.username=postgres
 spring.datasource.password=enigma
 spring.datasource.driver-class-name=org.postgresql.Driver
+
 # JPA / Hibernate Settings - Keep 'update' for your bonus tasks
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
 # Logging
 logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n
-# Spring AI Gemini
-spring.ai.google.ai.api-key=AIzaSyAT4nq6vxu2g_C2yO0vxI053olcdJAXQqo
+
+## AI Key - Please insert your Google Gemini API Key here
+spring.ai.google.ai.api-key=REPLACE_WITH_YOUR_KEY

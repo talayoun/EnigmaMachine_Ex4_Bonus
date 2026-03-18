@@ -21,11 +21,11 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-        </dependency>
+            <version>4.0.0</version> </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-        </dependency>
+            <version>4.0.2</version> </dependency>
     </dependencies>
 
     <build>

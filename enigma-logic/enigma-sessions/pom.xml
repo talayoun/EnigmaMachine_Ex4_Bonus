@@ -8,33 +8,34 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>enigma-sessions</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <version>3.2.1</version>
         </dependency>
-
         <dependency>
             <groupId>patmal.course.enigma</groupId>
             <artifactId>enigma-engine</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>patmal.course.enigma</groupId>
             <artifactId>enigma-loader</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-
         <dependency>
             <groupId>patmal.course.enigma</groupId>
             <artifactId>enigma-dal</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>6.1.15</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-
 </project>

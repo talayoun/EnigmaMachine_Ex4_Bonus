@@ -12,6 +12,7 @@
 
     <artifactId>enigma-logic</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>enigma-machine</module>
         <module>enigma-engine</module>

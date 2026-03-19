@@ -18,6 +18,7 @@ public class AIService {
     private final JdbcTemplate jdbcTemplate;
     private final RestTemplate restTemplate;
 
+    // Injected from application.properties or CLI to prevent 403 Leak errors
     @Value("${google.api.key}")
     private String apiKey;
 
@@ -29,30 +30,41 @@ public class AIService {
         this.restTemplate = new RestTemplate();
     }
 
-    /**
-     * Entry point for processing AI requests.
-     */
+    // Entry point for processing AI requests
     public AIResponseDTO processAIQuery(String userQuery) {
         String systemPrompt = """
             You are a SQL expert for an Enigma Machine PostgreSQL database.
-            Tables:
-            1. 'machines': [id, name, rotors_count, abc]
-            2. 'processing': [id, machine_id, input, output, time]
-            Rules: Return raw SQL only. No markdown formatting.
+            Your task is to convert English questions into valid PostgreSQL queries.
+    
+            SCHEMA:
+            1. 'machines': Columns [id (UUID), name (text), rotors_count (int), abc (text)]
+              - 'abc' is the alphabet used by the machine.
+            2. 'processing': Columns [id (UUID), machine_id (FK), session_id (text), code (text), input (text), output (text), time (bigint)]
+               - 'code' stores the machine configuration (e.g., <1,2><A,B><I>).
+               - 'time' stores the duration of processing in nanoseconds.
+            3. 'machine_rotors': Columns [id (UUID), machine_id (FK), rotor_id (int), notch (int), mapping (text)]
+            4. 'machine_reflectors': Columns [id (UUID), machine_id (FK), reflector_id (text), mapping (text)]
+
+            RULES:
+            - Return ONLY the raw SQL string.
+            - Do not use markdown (no ```sql).
+            - Use the 'machines' table to answer about machine specs.
+            - Use the 'processing' table for statistics (counts, averages, input/output).
+            - Always JOIN on machine_id when needed.
             """;
 
         String generatedSql = "";
         try {
-            // Step 1: Call Gemini to get the SQL
+            // Call Gemini to get the SQL
             String rawAiOutput = callGemini(systemPrompt + "\nUser Question: " + userQuery);
 
-            // Step 2: Clean potential markdown from the SQL string
+            // Clean potential markdown from the SQL string
             generatedSql = cleanSqlOutput(rawAiOutput);
 
-            // Step 3: Run the query
+            // Run the query
             List<Map<String, Object>> dbResults = jdbcTemplate.queryForList(generatedSql);
 
-            // Step 4: Get human-friendly interpretation from AI
+            // Get human-friendly interpretation from AI
             String interpretationPrompt = String.format(
                     "Database results for '%s' are: %s. Summarize this answer concisely.",
                     userQuery, dbResults
@@ -67,9 +79,7 @@ public class AIService {
         }
     }
 
-    /**
-     * Removes markdown backticks (```sql) from the AI's response.
-     */
+    // Removes markdown backticks (```sql) from the AI's response
     private String cleanSqlOutput(String rawSql) {
         return rawSql.replace("```sql", "")
                 .replace("```", "")
@@ -77,15 +87,12 @@ public class AIService {
                 .trim();
     }
 
-    /**
-     * Performs the actual REST call to Google Gemini.
-     */
+    // Performs the actual REST call to Google Gemini
     private String callGemini(String prompt) {
         Map<String, Object> requestBody = Map.of(
                 "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt))))
         );
 
-        // This is where the URL + API Key are combined
         Map<String, Object> response = restTemplate.postForObject(GEMINI_API_URL + apiKey, requestBody, Map.class);
 
         try {

@@ -5,6 +5,7 @@ import dto.AIResponseDTO;
 import org.springframework.web.bind.annotation.*;
 import service.AIService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/enigma/ai")
 public class AIController {

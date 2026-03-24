@@ -4,3 +4,4 @@ out/
 *.iml
 .idea/
 application.properties
+run4.bat
